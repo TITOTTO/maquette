@@ -1,0 +1,46 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Articles</h1>
+
+<div id="articles">
+  <% @articles.each do |article| %>
+
+  <% if article.images.attached? %>
+    <% article.images.each do |image|%>
+      <%= image_tag image, alt: 'images' %>
+    <%end%>
+  <%end%>
+
+    <%= render article %>
+    <p>La note moyenne est de : <%= article.somme%></p>
+    <p> 
+      <%= form_with url: "rates", method: :post do |f| %> <!-- Pour la notation -->
+        <input type="hidden" name="article" value="<%= article.id %>"> <!-- J'envoi le numéro de l'article -->
+        <%= f.label :note, "Ta note ? :" %>
+        <%= f.number_field :note, in: 0.0..5.0, step: 0.5 %>
+        <%= f.submit "Search" %>
+      <% end %>
+    </p>
+    <p>
+      <%= link_to "Show this article", article %><br>
+      <% article.comments.each do |comments| %><br>  <!-- Affiche les commentaires -->
+      <p>Titre :
+      <%= comments.title%><br>
+      Contenu :
+      <%= comments.content%>
+      </p>
+      <%end%>
+
+      <%= form_with url: "comments", method: :post do |f| %>  <!-- formulaire commentaire -->
+        <input type="hidden" name="article" value="<%= article.id %>"> <!-- J'envoi le numéro de l'article -->
+        <%= f.label :title, "Titre :" %>
+        <%= f.text_field :title %>
+        <%= f.label :content, "Ajouter un commentaire :" %>
+        <%= f.text_area :content %>
+        <%= f.submit "Ajouter" %>
+      <% end %>
+
+    </p>
+  <% end %>
+</div>
+
